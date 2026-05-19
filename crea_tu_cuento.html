@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crea tu propio cuento</title>
+  <style>
+    :root {
+      --fondo: #fff8e8;
+      --tarjeta: #ffffff;
+      --principal: #7cc7c0;
+      --principal-oscuro: #398d86;
+      --secundario: #ffd6a5;
+      --rosa: #ffcad4;
+      --lila: #cdb4db;
+      --verde: #caffbf;
+      --azul: #bde0fe;
+      --texto: #243b53;
+      --borde: #d6e6e4;
+      --sombra: 0 10px 24px rgba(36, 59, 83, 0.12);
+      --radio: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #fff8e8 0%, #eaf8f7 100%);
+      color: var(--texto);
+      min-height: 100vh;
+      font-size: 18px;
+    }
+
+    .app {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    header {
+      background: var(--tarjeta);
+      border: 4px solid var(--borde);
+      border-radius: var(--radio);
+      padding: 18px;
+      box-shadow: var(--sombra);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .guide {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: var(--secundario);
+      display: grid;
+      place-items: center;
+      font-size: 52px;
+      border: 4px solid #ffffff;
+      box-shadow: var(--sombra);
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.4;
+    }
+
+    .audio-btn, .main-btn, .nav-btn, .copy-btn {
+      border: none;
+      border-radius: 18px;
+      padding: 16px 20px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--texto);
+      background: var(--secundario);
+      box-shadow: 0 6px 0 #e8a95f;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      min-height: 58px;
+    }
+
+    .audio-btn:hover, .main-btn:hover, .nav-btn:hover, .copy-btn:hover,
+    .audio-btn:focus, .main-btn:focus, .nav-btn:focus, .copy-btn:focus {
+      outline: 5px solid rgba(57, 141, 134, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .audio-btn:active, .main-btn:active, .nav-btn:active, .copy-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #e8a95f;
+    }
+
+    .progress-box {
+      background: var(--tarjeta);
+      border-radius: 20px;
+      padding: 14px;
+      border: 3px solid var(--borde);
+      margin-bottom: 18px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .progress-track {
+      height: 28px;
+      background: #edf4f3;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 3px solid var(--borde);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--principal), var(--verde));
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    main {
+      background: rgba(255,255,255,0.88);
+      border: 4px solid var(--borde);
+      border-radius: 28px;
+      padding: 20px;
+      box-shadow: var(--sombra);
+      min-height: 520px;
+    }
+
+    .step-head {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .step-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      background: var(--rosa);
+      display: grid;
+      place-items: center;
+      font-size: 42px;
+      border: 4px solid #fff;
+    }
+
+    h2 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      margin-bottom: 4px;
+    }
+
+    .instruction {
+      font-size: 1.25rem;
+      margin: 0;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    .card {
+      background: var(--tarjeta);
+      border: 4px solid var(--borde);
+      border-radius: 24px;
+      padding: 16px;
+      min-height: 170px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 8px 0 #dbe8e6;
+      transition: transform 0.15s ease, border 0.15s ease, background 0.15s ease;
+    }
+
+    .card:hover, .card:focus {
+      outline: 5px solid rgba(255, 202, 212, 0.8);
+      transform: translateY(-3px);
+    }
+
+    .card.selected {
+      border-color: var(--principal-oscuro);
+      background: #effbf9;
+      transform: scale(1.03);
+      box-shadow: 0 8px 0 var(--principal);
+    }
+
+    .emoji {
+      font-size: 4rem;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .card span:last-child {
+      font-size: 1.18rem;
+      font-weight: 900;
+    }
+
+    .feedback {
+      min-height: 48px;
+      background: #f6fff0;
+      border: 3px dashed #9bd98f;
+      border-radius: 18px;
+      padding: 12px 16px;
+      font-weight: 900;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--lila);
+      box-shadow: 0 6px 0 #9d7ab4;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .next {
+      background: var(--principal);
+      box-shadow: 0 6px 0 var(--principal-oscuro);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .story-box, .image-box, .prompt-box {
+      background: #ffffff;
+      border: 4px solid var(--principal);
+      border-radius: 28px;
+      padding: 20px;
+      box-shadow: var(--sombra);
+      margin-top: 18px;
+    }
+
+    .story-box {
+      font-size: clamp(1.35rem, 3vw, 1.9rem);
+      line-height: 1.6;
+    }
+
+    .story-title {
+      text-align: center;
+      background: var(--secundario);
+      border-radius: 20px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+    }
+
+    .story-images {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 16px 0;
+      font-size: 4rem;
+    }
+
+    .choice-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .summary-pill {
+      background: #f4fbfa;
+      border: 3px solid var(--borde);
+      border-radius: 18px;
+      padding: 12px;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .image-scene {
+      min-height: 320px;
+      border-radius: 28px;
+      border: 5px solid #fff;
+      background: linear-gradient(180deg, #bde0fe 0%, #fdf6d8 58%, #caffbf 100%);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+      padding: 24px;
+    }
+
+    .image-scene::before {
+      content: "☁️ ☁️ ☀️ ☁️";
+      position: absolute;
+      top: 18px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 3rem;
+      opacity: 0.9;
+    }
+
+    .scene-card {
+      margin-top: 58px;
+      background: rgba(255,255,255,0.82);
+      border: 4px solid rgba(255,255,255,0.9);
+      border-radius: 28px;
+      padding: 22px;
+      text-align: center;
+      max-width: 760px;
+      box-shadow: var(--sombra);
+    }
+
+    .scene-main {
+      font-size: clamp(4rem, 10vw, 7rem);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .scene-text {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .prompt-text {
+      background: #f7f0ff;
+      border: 3px solid #d8c2f0;
+      border-radius: 18px;
+      padding: 16px;
+      line-height: 1.5;
+      font-size: 1.1rem;
+      font-weight: 700;
+      user-select: all;
+    }
+
+    .copy-btn {
+      background: var(--azul);
+      box-shadow: 0 6px 0 #78aede;
+      margin-top: 12px;
+    }
+
+    .hidden { display: none; }
+
+    .calm-note {
+      background: #f7f0ff;
+      border: 3px solid #d8c2f0;
+      border-radius: 18px;
+      padding: 12px 16px;
+      margin-top: 14px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .guide { margin: 0 auto; }
+
+      .step-head {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .step-icon { margin: 0 auto; }
+
+      .cards { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="guide" aria-label="Personaje guía">🦉</div>
+      <div>
+        <h1>Crea tu cuento</h1>
+        <p class="subtitle">Hola. Soy Lúa. Te ayudo paso a paso. Elige una tarjeta.</p>
+      </div>
+      <button class="audio-btn" id="audioBtn" type="button" aria-label="Escuchar instrucciones">🔊 Escuchar</button>
+    </header>
+
+    <section class="progress-box" aria-label="Progreso">
+      <div class="progress-label">
+        <span id="stepCounter">Paso 1 de 6</span>
+        <span id="progressText">0%</span>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </section>
+
+    <main id="content" aria-live="polite"></main>
+  </div>
+
+  <script>
+    const steps = [
+      {
+        key: 'personaje',
+        icon: '⭐',
+        title: 'Elige un personaje',
+        instruction: '¿Quién vive la historia?',
+        feedback: '¡Muy bien! Ya tenemos protagonista.',
+        options: [
+          { text: 'pirata', emoji: '🏴‍☠️' },
+          { text: 'dragón', emoji: '🐉' },
+          { text: 'robot', emoji: '🤖' },
+          { text: 'princesa', emoji: '👸' },
+          { text: 'perro', emoji: '🐶' },
+          { text: 'astronauta', emoji: '👩‍🚀' },
+          { text: 'unicornio', emoji: '🦄' },
+          { text: 'hada', emoji: '🧚' },
+          { text: 'dinosaurio', emoji: '🦖' },
+          { text: 'gato', emoji: '🐱' },
+          { text: 'sirena', emoji: '🧜‍♀️' },
+          { text: 'superhéroe', emoji: '🦸' }
+        ]
+      },
+      {
+        key: 'lugar',
+        icon: '🗺️',
+        title: 'Elige un lugar',
+        instruction: '¿Dónde pasa el cuento?',
+        feedback: '¡Genial! Ese lugar es perfecto.',
+        options: [
+          { text: 'bosque', emoji: '🌳' },
+          { text: 'castillo', emoji: '🏰' },
+          { text: 'espacio', emoji: '🚀' },
+          { text: 'mar', emoji: '🌊' },
+          { text: 'colegio', emoji: '🏫' },
+          { text: 'selva', emoji: '🌴' },
+          { text: 'montaña', emoji: '⛰️' },
+          { text: 'cueva', emoji: '🕳️' },
+          { text: 'isla', emoji: '🏝️' },
+          { text: 'ciudad', emoji: '🏙️' },
+          { text: 'granja', emoji: '🚜' },
+          { text: 'biblioteca', emoji: '📚' }
+        ]
+      },
+      {
+        key: 'problema',
+        icon: '❓',
+        title: 'Elige una aventura',
+        instruction: '¿Qué problema aparece?',
+        feedback: '¡Qué aventura tan interesante!',
+        options: [
+          { text: 'perdió un tesoro', emoji: '🪙' },
+          { text: 'busca un amigo', emoji: '🤝' },
+          { text: 'hay una tormenta', emoji: '⛈️' },
+          { text: 'se apagó la luz', emoji: '💡' },
+          { text: 'apareció un mapa', emoji: '🗺️' },
+          { text: 'oyó un ruido raro', emoji: '👂' },
+          { text: 'encontró una llave', emoji: '🔑' },
+          { text: 'se perdió el camino', emoji: '🧭' },
+          { text: 'un animal necesita ayuda', emoji: '🐾' },
+          { text: 'llegó una carta misteriosa', emoji: '✉️' }
+        ]
+      },
+      {
+        key: 'despues',
+        icon: '➡️',
+        title: 'Elige qué pasa después',
+        instruction: '¿Qué hace el personaje?',
+        feedback: '¡Estás creando muy bien!',
+        options: [
+          { text: 'pide ayuda', emoji: '🙋' },
+          { text: 'sigue unas huellas', emoji: '🐾' },
+          { text: 'encuentra una puerta mágica', emoji: '🚪' },
+          { text: 'canta una canción', emoji: '🎵' },
+          { text: 'dibuja un plan', emoji: '✏️' },
+          { text: 'comparte su merienda', emoji: '🍎' },
+          { text: 'usa una linterna', emoji: '🔦' },
+          { text: 'lee un libro mágico', emoji: '📖' },
+          { text: 'construye un puente', emoji: '🌉' },
+          { text: 'abraza a un amigo', emoji: '🤗' }
+        ]
+      },
+      {
+        key: 'objeto',
+        icon: '🎒',
+        title: 'Elige un objeto mágico',
+        instruction: '¿Qué objeto ayuda en la historia?',
+        feedback: '¡Ese objeto ayudará mucho!',
+        options: [
+          { text: 'varita brillante', emoji: '🪄' },
+          { text: 'mochila mágica', emoji: '🎒' },
+          { text: 'brújula dorada', emoji: '🧭' },
+          { text: 'libro parlante', emoji: '📘' },
+          { text: 'estrella luminosa', emoji: '⭐' },
+          { text: 'barco pequeño', emoji: '⛵' },
+          { text: 'gafas especiales', emoji: '🥽' },
+          { text: 'campana musical', emoji: '🔔' }
+        ]
+      },
+      {
+        key: 'emocion',
+        icon: '💛',
+        title: 'Elige una emoción',
+        instruction: '¿Cómo se siente el personaje?',
+        feedback: '¡Muy bien! Las emociones son importantes.',
+        options: [
+          { text: 'valiente', emoji: '💪' },
+          { text: 'contento', emoji: '😊' },
+          { text: 'tranquilo', emoji: '😌' },
+          { text: 'curioso', emoji: '🔎' },
+          { text: 'nervioso', emoji: '😟' },
+          { text: 'emocionado', emoji: '🤩' }
+        ]
+      },
+      {
+        key: 'final',
+        icon: '🎉',
+        title: 'Elige el final',
+        instruction: '¿Cómo termina el cuento?',
+        feedback: '¡Fantástico! Ya casi está tu cuento.',
+        options: [
+          { text: 'feliz', emoji: '😊' },
+          { text: 'divertido', emoji: '😂' },
+          { text: 'sorprendente', emoji: '✨' },
+          { text: 'mágico', emoji: '🌈' },
+          { text: 'amistoso', emoji: '🤝' },
+          { text: 'aventurero', emoji: '🏆' }
+        ]
+      },
+      {
+        key: 'cuento',
+        icon: '📖',
+        title: 'Tu cuento completo',
+        instruction: 'Lee o escucha tu historia.',
+        options: []
+      }
+    ];
+
+    const selections = {};
+    let currentStep = 0;
+
+    const content = document.getElementById('content');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const stepCounter = document.getElementById('stepCounter');
+    const audioBtn = document.getElementById('audioBtn');
+
+    function render() {
+      updateProgress();
+      const step = steps[currentStep];
+
+      if (step.key === 'cuento') {
+        renderStory();
+        return;
+      }
+
+      content.innerHTML = `
+        <section>
+          <div class="step-head">
+            <div class="step-icon" aria-hidden="true">${step.icon}</div>
+            <div>
+              <h2>${step.title}</h2>
+              <p class="instruction">${step.instruction}</p>
+            </div>
+          </div>
+
+          <div class="cards" role="listbox" aria-label="Opciones de ${step.title}">
+            ${step.options.map(option => `
+              <button class="card ${isSelected(step.key, option.text) ? 'selected' : ''}" type="button" onclick="selectOption('${step.key}', '${option.text}', '${option.emoji}')" aria-label="Elegir ${option.text}">
+                <span class="emoji" aria-hidden="true">${option.emoji}</span>
+                <span>${capitalize(option.text)}</span>
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="feedback" id="feedback">
+            ${selections[step.key] ? '🌟 ' + step.feedback : '👆 Toca una tarjeta grande.'}
+          </div>
+
+          <div class="calm-note">💡 Puedes ir despacio. No hay prisa. Elige solo una opción.</div>
+
+          <div class="navigation">
+            <button class="nav-btn" type="button" onclick="previousStep()" ${currentStep === 0 ? 'disabled' : ''}>⬅️ Anterior</button>
+            <button class="nav-btn next" type="button" onclick="nextStep()" ${!selections[step.key] ? 'disabled' : ''}>Siguiente ➡️</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderStory() {
+      const cuento = buildStory();
+      
+      const emojis = ['personaje', 'lugar', 'problema', 'despues', 'objeto', 'emocion', 'final']
+        .map(key => selections[key]?.emoji || '')
+        .join(' ');
+
+      content.innerHTML = `
+        <section>
+          <div class="step-head">
+            <div class="step-icon" aria-hidden="true">📖</div>
+            <div>
+              <h2>Tu cuento completo</h2>
+              <p class="instruction">¡Lo has conseguido! Aquí está tu historia.</p>
+            </div>
+          </div>
+
+          
+            </div>
+          </div>
+
+          <div class="story-box">
+            <div class="story-title">${storyTitle()}</div>
+            <div class="story-images" aria-hidden="true">${emojis}</div>
+            <p>${cuento}</p>
+          </div>
+
+          <div class="feedback">🏆 ¡Bravo! Has creado un cuento precioso y una imagen de la escena.</div>
+
+          <div class="navigation">
+            <button class="nav-btn" type="button" onclick="previousStep()">⬅️ Anterior</button>
+            <button class="nav-btn next" type="button" onclick="restartStory()">🔁 Crear otro cuento</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function selectOption(key, text, emoji) {
+      selections[key] = { text, emoji };
+      render();
+      speakPositive();
+    }
+
+    function isSelected(key, text) {
+      return selections[key] && selections[key].text === text;
+    }
+
+    function nextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function restartStory() {
+      Object.keys(selections).forEach(key => delete selections[key]);
+      currentStep = 0;
+      render();
+    }
+
+    function updateProgress() {
+      const percent = Math.round((currentStep / (steps.length - 1)) * 100);
+      progressFill.style.width = percent + '%';
+      progressText.textContent = percent + '%';
+      stepCounter.textContent = `Paso ${currentStep + 1} de ${steps.length}`;
+    }
+
+    function buildStory() {
+      const p = selections.personaje.text;
+      const l = selections.lugar.text;
+      const pr = selections.problema.text;
+      const d = selections.despues.text;
+      const o = selections.objeto.text;
+      const e = selections.emocion.text;
+      const f = selections.final.text;
+
+      const finalTexts = {
+        'feliz': 'Al final, todos sonrieron. El personaje aprendió que pedir ayuda y confiar en los demás hace que el corazón se sienta grande y feliz.',
+        'divertido': 'Al final, todo terminó con risas, saltos y una pequeña fiesta. Nadie pudo parar de reír porque la aventura fue muy graciosa.',
+        'sorprendente': 'Al final, apareció una luz brillante y todos descubrieron algo que nadie esperaba. Fue una sorpresa maravillosa.',
+        'mágico': 'Al final, el lugar se llenó de colores, estrellas y música suave. La magia ayudó a que todo saliera bien.',
+        'amistoso': 'Al final, el personaje hizo nuevos amigos. Juntos compartieron la aventura y prometieron cuidarse siempre.',
+        'aventurero': 'Al final, el personaje levantó los brazos como un gran explorador. Había superado el reto y estaba listo para vivir nuevas aventuras.'
+      };
+
+      return `Había una vez un ${p} que vivía en un ${l}. Cada mañana miraba a su alrededor con ojos curiosos y saludaba con cariño. Un día pasó algo especial: ${pr}. El ${p} se sintió ${e}, respiró despacio y pensó: “Puedo intentarlo”. Entonces decidió que lo mejor era ${d}. Por el camino encontró un objeto muy especial: una ${o}. Aquel objeto le ayudó a mirar mejor, escuchar mejor y seguir adelante paso a paso. Primero dio un paso pequeño. Después dio otro. Poco a poco, el problema empezó a hacerse más fácil. En el ${l}, todos miraban con atención y animaban al ${p}. El personaje descubrió que las aventuras no tienen que hacerse deprisa. Se pueden hacer con calma, con ayuda y con imaginación. ${finalTexts[f]}`;
+    }
+
+    
+
+    function storyTitle() {
+      return `El cuento del ${selections.personaje.text}`;
+    }
+
+    function capitalize(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    
+
+    function speakCurrentInstruction() {
+      if (!('speechSynthesis' in window)) {
+        alert('El audio no está disponible en este navegador.');
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+      const step = steps[currentStep];
+      let text = '';
+
+      if (step.key === 'cuento') {
+        text = buildStory();
+      } else {
+        text = `${step.title}. ${step.instruction}. Toca una tarjeta grande y elige tu opción favorita.`;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+
+      const voices = window.speechSynthesis.getVoices();
+
+      const preferredVoice = voices.find(v =>
+        v.lang.includes('es') && (
+          v.name.includes('Google') ||
+          v.name.includes('Helena') ||
+          v.name.includes('Laura') ||
+          v.name.includes('Paulina') ||
+          v.name.includes('Monica') ||
+          v.name.includes('Microsoft')
+        )
+      );
+
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+      }
+
+      utterance.lang = 'es-ES';
+      utterance.rate = 0.78;
+      utterance.pitch = 1.08;
+      utterance.volume = 1;
+
+      utterance.text = text
+        .replace(/\./g, '. ')
+        .replace(/,/g, ', ')
+        .replace(/:/g, ': ');
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function speakPositive() {
+      if (!('speechSynthesis' in window)) return;
+
+      window.speechSynthesis.cancel();
+
+      const messages = [
+        'Muy bien',
+        'Genial',
+        'Lo estás haciendo fenomenal',
+        'Gran elección',
+        'Sigue así',
+        'Qué buena idea',
+        'Estoy muy orgullosa de ti'
+      ];
+
+      const utterance = new SpeechSynthesisUtterance(
+        messages[Math.floor(Math.random() * messages.length)]
+      );
+
+      const voices = window.speechSynthesis.getVoices();
+
+      const preferredVoice = voices.find(v =>
+        v.lang.includes('es') && (
+          v.name.includes('Google') ||
+          v.name.includes('Helena') ||
+          v.name.includes('Laura') ||
+          v.name.includes('Paulina') ||
+          v.name.includes('Monica') ||
+          v.name.includes('Microsoft')
+        )
+      );
+
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+      }
+
+      utterance.lang = 'es-ES';
+      utterance.rate = 0.82;
+      utterance.pitch = 1.12;
+      utterance.volume = 1;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    audioBtn.addEventListener('click', speakCurrentInstruction);
+
+    render();
+  </script>
+</body>
+</html>
